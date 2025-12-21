@@ -20,9 +20,9 @@ This document contains comprehensive examples and advanced patterns for using th
 
 Before running these examples:
 
-1. Install dependencies: `cd ~/.claude/skills/cloudflare-manager && bun install`
+1. No dependencies needed (Zero Dependencies!)
 2. Configure `.env` file in your project root with `CLOUDFLARE_API_KEY`
-3. Validate credentials: `bun scripts/validate-api-key.ts`
+3. Validate credentials: `node scripts/validate-api-key.js`
 
 All examples assume you're running commands from your project root where `.env` is located.
 
@@ -58,7 +58,7 @@ async function handleRequest(request) {
 EOF
 
 # Deploy worker
-bun scripts/workers.ts deploy api-worker ./api-worker.js
+node scripts/workers.js deploy api-worker ./api-worker.js
 
 # Expected output:
 # ✅ Worker deployed successfully!
@@ -74,7 +74,7 @@ Deploy a worker with KV storage for caching:
 
 ```bash
 # Create KV namespace
-bun scripts/kv-storage.ts create-namespace api-cache
+node scripts/kv-storage.js create-namespace api-cache
 
 # Note the namespace ID from output (e.g., abc123)
 
@@ -117,7 +117,7 @@ async function handleRequest(request) {
 EOF
 
 # Deploy with KV binding
-bun scripts/workers.ts deploy cache-worker ./cache-worker.js --kv-binding CACHE:abc123
+node scripts/workers.js deploy cache-worker ./cache-worker.js --kv-binding CACHE:abc123
 ```
 
 ### Worker with R2 Storage
@@ -159,7 +159,7 @@ async function handleRequest(request) {
 EOF
 
 # Deploy with R2 binding
-bun scripts/workers.ts deploy cdn-worker ./cdn-worker.js --r2-binding BUCKET:static-assets
+node scripts/workers.js deploy cdn-worker ./cdn-worker.js --r2-binding BUCKET:static-assets
 ```
 
 ---
@@ -172,20 +172,20 @@ Use KV storage for user sessions:
 
 ```bash
 # Create namespace
-bun scripts/kv-storage.ts create-namespace user-sessions
+node scripts/kv-storage.js create-namespace user-sessions
 
 # Store session
-bun scripts/kv-storage.ts write <namespace-id> "session:abc123" '{
+node scripts/kv-storage.js write <namespace-id> "session:abc123" '{
   "userId": "user-456",
   "email": "user@example.com",
   "createdAt": "2024-01-15T10:00:00Z"
 }'
 
 # Read session
-bun scripts/kv-storage.ts read <namespace-id> "session:abc123"
+node scripts/kv-storage.js read <namespace-id> "session:abc123"
 
 # Delete session (logout)
-bun scripts/kv-storage.ts delete <namespace-id> "session:abc123"
+node scripts/kv-storage.js delete <namespace-id> "session:abc123"
 ```
 
 ### Configuration Management
@@ -194,7 +194,7 @@ Store application configuration:
 
 ```bash
 # Create config namespace
-bun scripts/kv-storage.ts create-namespace app-config
+node scripts/kv-storage.js create-namespace app-config
 
 # Store configuration as JSON
 cat > config.json << 'EOF'
@@ -209,7 +209,7 @@ cat > config.json << 'EOF'
 EOF
 
 # Upload all config at once
-bun scripts/kv-storage.ts bulk-write <namespace-id> ./config.json
+node scripts/kv-storage.js bulk-write <namespace-id> ./config.json
 ```
 
 ### Rate Limiting
@@ -218,7 +218,7 @@ Implement rate limiting with KV:
 
 ```bash
 # Create rate-limit namespace
-bun scripts/kv-storage.ts create-namespace rate-limits
+node scripts/kv-storage.js create-namespace rate-limits
 
 # In worker:
 cat > rate-limiter.js << 'EOF'
@@ -342,7 +342,7 @@ npm run generate  # Creates ./dist
 # Just have your files in a directory
 
 # Deploy to Pages
-bun scripts/pages.ts deploy my-website ./dist
+node scripts/pages.js deploy my-website ./dist
 
 # Expected output:
 # ✅ Pages project ready!
@@ -357,14 +357,14 @@ Configure environment variables for Pages:
 
 ```bash
 # Set API endpoint
-bun scripts/pages.ts set-env my-website API_URL https://api.example.com
+node scripts/pages.js set-env my-website API_URL https://api.example.com
 
 # Set for preview environment
-bun scripts/pages.ts set-env my-website API_URL https://staging-api.example.com --env preview
+node scripts/pages.js set-env my-website API_URL https://staging-api.example.com --env preview
 
 # Set multiple variables
-bun scripts/pages.ts set-env my-website ANALYTICS_ID UA-12345
-bun scripts/pages.ts set-env my-website FEATURE_FLAG_NEW_UI true
+node scripts/pages.js set-env my-website ANALYTICS_ID UA-12345
+node scripts/pages.js set-env my-website FEATURE_FLAG_NEW_UI true
 ```
 
 ### Multi-Environment Setup
@@ -373,14 +373,14 @@ Deploy to multiple environments:
 
 ```bash
 # Production
-bun scripts/pages.ts deploy my-app-prod ./dist
+node scripts/pages.js deploy my-app-prod ./dist
 
 # Staging
-bun scripts/pages.ts deploy my-app-staging ./dist
+node scripts/pages.js deploy my-app-staging ./dist
 
 # Set environment-specific variables
-bun scripts/pages.ts set-env my-app-prod API_URL https://api.example.com
-bun scripts/pages.ts set-env my-app-staging API_URL https://staging.example.com
+node scripts/pages.js set-env my-app-prod API_URL https://api.example.com
+node scripts/pages.js set-env my-app-staging API_URL https://staging.example.com
 ```
 
 ---
@@ -393,22 +393,22 @@ Set up a complete domain with DNS and routes:
 
 ```bash
 # List your zones
-bun scripts/dns-routes.ts list-zones
+node scripts/dns-routes.js list-zones
 
 # Create DNS records
-bun scripts/dns-routes.ts create-dns example.com A @ 192.168.1.1
-bun scripts/dns-routes.ts create-dns example.com CNAME www example.com --proxied
-bun scripts/dns-routes.ts create-dns example.com A api 192.168.1.2
+node scripts/dns-routes.js create-dns example.com A @ 192.168.1.1
+node scripts/dns-routes.js create-dns example.com CNAME www example.com --proxied
+node scripts/dns-routes.js create-dns example.com A api 192.168.1.2
 
 # Create worker routes
-bun scripts/dns-routes.ts create-route example.com "example.com/api/*" api-worker
-bun scripts/dns-routes.ts create-route example.com "example.com/cdn/*" cdn-worker
+node scripts/dns-routes.js create-route example.com "example.com/api/*" api-worker
+node scripts/dns-routes.js create-route example.com "example.com/cdn/*" cdn-worker
 
 # List all DNS records
-bun scripts/dns-routes.ts list-dns example.com
+node scripts/dns-routes.js list-dns example.com
 
 # List all routes
-bun scripts/dns-routes.ts list-routes example.com
+node scripts/dns-routes.js list-routes example.com
 ```
 
 ### Subdomain Configuration
@@ -417,14 +417,14 @@ Set up subdomains with different workers:
 
 ```bash
 # Create DNS records for subdomains
-bun scripts/dns-routes.ts create-dns example.com A api 192.168.1.2
-bun scripts/dns-routes.ts create-dns example.com A admin 192.168.1.3
-bun scripts/dns-routes.ts create-dns example.com A blog 192.168.1.4
+node scripts/dns-routes.js create-dns example.com A api 192.168.1.2
+node scripts/dns-routes.js create-dns example.com A admin 192.168.1.3
+node scripts/dns-routes.js create-dns example.com A blog 192.168.1.4
 
 # Route each subdomain to different workers
-bun scripts/dns-routes.ts create-route example.com "api.example.com/*" api-worker
-bun scripts/dns-routes.ts create-route example.com "admin.example.com/*" admin-worker
-bun scripts/dns-routes.ts create-route example.com "blog.example.com/*" blog-worker
+node scripts/dns-routes.js create-route example.com "api.example.com/*" api-worker
+node scripts/dns-routes.js create-route example.com "admin.example.com/*" admin-worker
+node scripts/dns-routes.js create-route example.com "blog.example.com/*" blog-worker
 ```
 
 ---
@@ -437,31 +437,31 @@ Deploy a full application with worker, KV, R2, and Pages:
 
 ```bash
 # 1. Create KV namespace for sessions
-bun scripts/kv-storage.ts create-namespace app-sessions
+node scripts/kv-storage.js create-namespace app-sessions
 # Note the namespace ID: ns-abc123
 
 # 2. Create KV namespace for cache
-bun scripts/kv-storage.ts create-namespace app-cache
+node scripts/kv-storage.js create-namespace app-cache
 # Note the namespace ID: ns-xyz789
 
 # 3. Create R2 bucket for user uploads
 bun scripts/r2-storage.ts create-bucket app-uploads
 
 # 4. Deploy API worker with bindings
-bun scripts/workers.ts deploy app-api ./api-worker.js \
+node scripts/workers.js deploy app-api ./api-worker.js \
   --kv-binding SESSIONS:ns-abc123 \
   --kv-binding CACHE:ns-xyz789 \
   --r2-binding UPLOADS:app-uploads
 
 # 5. Deploy frontend to Pages
-bun scripts/pages.ts deploy app-frontend ./dist
+node scripts/pages.js deploy app-frontend ./dist
 
 # 6. Set environment variables for frontend
-bun scripts/pages.ts set-env app-frontend API_URL https://app-api.username.workers.dev
+node scripts/pages.js set-env app-frontend API_URL https://app-api.username.workers.dev
 
 # 7. Configure DNS and routes
-bun scripts/dns-routes.ts create-dns example.com A @ 192.168.1.1
-bun scripts/dns-routes.ts create-route example.com "example.com/api/*" app-api
+node scripts/dns-routes.js create-dns example.com A @ 192.168.1.1
+node scripts/dns-routes.js create-route example.com "example.com/api/*" app-api
 ```
 
 ### Microservices Architecture
@@ -470,24 +470,24 @@ Deploy multiple workers for microservices:
 
 ```bash
 # Auth service
-bun scripts/workers.ts deploy auth-service ./auth-worker.js \
+node scripts/workers.js deploy auth-service ./auth-worker.js \
   --kv-binding SESSIONS:sessions-ns
 
 # User service
-bun scripts/workers.ts deploy user-service ./user-worker.js \
+node scripts/workers.js deploy user-service ./user-worker.js \
   --kv-binding USERS:users-ns
 
 # Payment service
-bun scripts/workers.ts deploy payment-service ./payment-worker.js \
+node scripts/workers.js deploy payment-service ./payment-worker.js \
   --kv-binding TRANSACTIONS:transactions-ns
 
 # API Gateway (routes to other services)
-bun scripts/workers.ts deploy api-gateway ./gateway-worker.js
+node scripts/workers.js deploy api-gateway ./gateway-worker.js
 
 # Configure routes
-bun scripts/dns-routes.ts create-route example.com "api.example.com/auth/*" auth-service
-bun scripts/dns-routes.ts create-route example.com "api.example.com/users/*" user-service
-bun scripts/dns-routes.ts create-route example.com "api.example.com/payments/*" payment-service
+node scripts/dns-routes.js create-route example.com "api.example.com/auth/*" auth-service
+node scripts/dns-routes.js create-route example.com "api.example.com/users/*" user-service
+node scripts/dns-routes.js create-route example.com "api.example.com/payments/*" payment-service
 ```
 
 ---
@@ -498,10 +498,10 @@ bun scripts/dns-routes.ts create-route example.com "api.example.com/payments/*" 
 
 ```bash
 # Check if worker exists
-bun scripts/workers.ts get my-worker
+node scripts/workers.js get my-worker
 
 # List all workers
-bun scripts/workers.ts list
+node scripts/workers.js list
 
 # Check worker logs (requires wrangler)
 wrangler tail my-worker
@@ -514,17 +514,17 @@ node --check ./worker.js
 
 ```bash
 # Verify namespace exists
-bun scripts/kv-storage.ts list-namespaces
+node scripts/kv-storage.js list-namespaces
 
 # Check if key exists
-bun scripts/kv-storage.ts read <namespace-id> my-key
+node scripts/kv-storage.js read <namespace-id> my-key
 
 # List all keys to verify
-bun scripts/kv-storage.ts list-keys <namespace-id>
+node scripts/kv-storage.js list-keys <namespace-id>
 
 # Delete and recreate if corrupted
-bun scripts/kv-storage.ts delete-namespace <namespace-id>
-bun scripts/kv-storage.ts create-namespace new-namespace
+node scripts/kv-storage.js delete-namespace <namespace-id>
+node scripts/kv-storage.js create-namespace new-namespace
 ```
 
 ### R2 Upload Problems
@@ -548,10 +548,10 @@ bun scripts/r2-storage.ts list-objects my-bucket
 
 ```bash
 # Verify zone is active
-bun scripts/dns-routes.ts list-zones
+node scripts/dns-routes.js list-zones
 
 # Check current DNS records
-bun scripts/dns-routes.ts list-dns example.com
+node scripts/dns-routes.js list-dns example.com
 
 # Verify nameservers are correct
 dig NS example.com
@@ -564,10 +564,10 @@ dig A api.example.com
 
 ```bash
 # Re-validate API key
-bun scripts/validate-api-key.ts --no-cache
+node scripts/validate-api-key.js --no-cache
 
 # Check permissions
-bun scripts/validate-api-key.ts --update-skill
+node scripts/validate-api-key.js --update-skill
 
 # Verify .env file
 cat .env | grep CLOUDFLARE_API_KEY
@@ -596,11 +596,11 @@ curl -X GET "https://api.cloudflare.com/client/v4/user/tokens/verify" \
 
 ```bash
 # 1. Create KV namespace for URL mappings
-bun scripts/kv-storage.ts create-namespace url-mappings
+node scripts/kv-storage.js create-namespace url-mappings
 # Save namespace ID: abc123
 
 # 2. Create KV namespace for analytics
-bun scripts/kv-storage.ts create-namespace url-analytics
+node scripts/kv-storage.js create-namespace url-analytics
 # Save namespace ID: def456
 
 # 3. Create worker
@@ -654,7 +654,7 @@ function generateSlug() {
 EOF
 
 # 4. Deploy worker with bindings
-bun scripts/workers.ts deploy url-shortener ./url-shortener.js \
+node scripts/workers.js deploy url-shortener ./url-shortener.js \
   --kv-binding URL_MAPPINGS:abc123 \
   --kv-binding URL_ANALYTICS:def456
 
@@ -694,7 +694,7 @@ bun scripts/r2-storage.ts create-bucket image-originals
 bun scripts/r2-storage.ts upload image-originals ./photo.jpg images/photo.jpg
 
 # 3. Create KV for caching resized images
-bun scripts/kv-storage.ts create-namespace image-cache
+node scripts/kv-storage.js create-namespace image-cache
 # Save namespace ID: xyz789
 
 # 4. Create worker with image transformation
@@ -753,7 +753,7 @@ async function handleRequest(request) {
 EOF
 
 # 5. Deploy
-bun scripts/workers.ts deploy image-cdn ./image-cdn.js \
+node scripts/workers.js deploy image-cdn ./image-cdn.js \
   --kv-binding IMAGE_CACHE:xyz789 \
   --r2-binding IMAGES:image-originals
 ```
@@ -941,5 +941,5 @@ async function handleRequest(request) {
 For more help, run validation to ensure your API key has the correct permissions:
 
 ```bash
-bun scripts/validate-api-key.ts --update-skill
+node scripts/validate-api-key.js --update-skill
 ```

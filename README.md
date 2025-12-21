@@ -25,6 +25,8 @@ A Claude Code skill for managing Cloudflare services including Workers, KV Stora
 - **D1 Database**: Create, query, and manage D1 SQL databases
 - **Zone Management**: List zones, view settings, and manage domains
 - **Cache Purge**: Purge CDN cache by URL, tags, prefixes, or hostname
+- **Secrets Management**: Securely manage Worker environment secrets
+- **Cron Triggers**: Schedule Workers to run on cron schedules
 - **API Validation**: Validate credentials and check permissions
 - **Error Handling**: Automatic retries with exponential backoff
 - **URL Auto-Extraction**: Automatically captures and returns deployment URLs
@@ -165,6 +167,8 @@ node scripts/dns-routes.js list-zones
 | `node scripts/zones.js <cmd>` | Manage zones and purge cache |
 | `node scripts/d1-database.js <cmd>` | Manage D1 databases and run SQL |
 | `node scripts/logs.js <cmd>` | View Workers and Pages logs |
+| `node scripts/secrets.js <cmd>` | Manage Workers secrets |
+| `node scripts/cron.js <cmd>` | Manage Cron Triggers (scheduled tasks) |
 
 #### Zone Management & Cache Purge
 
@@ -473,6 +477,46 @@ npm install -g wrangler
 npx wrangler login
 ```
 
+#### 密钥管理 (Secrets)
+
+```bash
+# 列出 Worker 的所有密钥
+node scripts/secrets.js list my-worker
+
+# 创建或更新密钥
+node scripts/secrets.js put my-worker API_KEY sk-123456
+node scripts/secrets.js put my-worker DATABASE_URL "postgres://user:pass@host/db"
+
+# 删除密钥
+node scripts/secrets.js delete my-worker OLD_SECRET
+```
+
+**注意**: 密钥值永远不会通过 API 暴露，只有 Worker 运行时可以访问。
+
+#### 定时任务 (Cron Triggers)
+
+```bash
+# 列出当前调度
+node scripts/cron.js list my-worker
+
+# 每 5 分钟运行一次
+node scripts/cron.js update my-worker "*/5 * * * *"
+
+# 设置多个调度（最多 3 个）
+node scripts/cron.js update my-worker "0 * * * *" "0 0 * * *"
+
+# 工作日 9 点运行（UTC 时间）
+node scripts/cron.js update my-worker "0 9 * * 1-5"
+
+# 删除所有调度
+node scripts/cron.js delete my-worker
+
+# 本地测试说明
+node scripts/cron.js test my-worker
+```
+
+**注意**: Cloudflare 使用 UTC 时间处理所有 cron 调度。
+
 ### 系统要求
 
 - **Node.js 18+**: 脚本运行时（内置 fetch API）
@@ -521,6 +565,8 @@ cloudflare-manager/
 │   ├── zones.js             # Zone management & cache purge / 域名管理与缓存清除
 │   ├── d1-database.js       # D1 database management / D1 数据库管理
 │   ├── logs.js              # Workers & Pages logs / 日志查看
+│   ├── secrets.js           # Workers secrets / 密钥管理
+│   ├── cron.js              # Cron Triggers / 定时任务
 │   └── utils.js             # Shared utilities / 共享工具
 └── templates/            # Starter templates / 起始模板
     ├── worker-template.js
@@ -541,6 +587,6 @@ MIT License
 
 ---
 
-**Version / 版本**: 2.2.0
+**Version / 版本**: 1.0.0
 **Last Updated / 最后更新**: 2025-12-21
-**Features / 特性**: Zero Dependencies, Node.js 18+, ES Modules, D1 Database, Zone Management, Cache Purge, Logs Viewing / 零依赖、Node.js 18+、ES Modules、D1 数据库、Zone 管理、缓存清除、日志查看
+**Features / 特性**: Zero Dependencies, Node.js 18+, ES Modules, D1 Database, Zone Management, Cache Purge, Logs Viewing, Secrets Management, Cron Triggers / 零依赖、Node.js 18+、ES Modules、D1 数据库、Zone 管理、缓存清除、日志查看、密钥管理、定时任务

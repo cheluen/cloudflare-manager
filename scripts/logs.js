@@ -251,7 +251,7 @@ async function queryWorkerLogs(workerName, options = {}) {
     // Show statistics
     if (result.statistics) {
       console.log('─'.repeat(80));
-      console.log('�� Statistics:');
+      console.log('📊 Statistics:');
       console.log(`   Rows read: ${result.statistics.rowsRead || 0}`);
       console.log(`   Query time: ${result.statistics.elapsedMs || 0}ms\n`);
     }

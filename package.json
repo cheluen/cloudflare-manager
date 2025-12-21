@@ -1,6 +1,6 @@
 {
   "name": "cloudflare-manager-skill",
-  "version": "2.2.0",
+  "version": "1.0.0",
   "type": "module",
   "description": "Cloudflare management skill for Claude Code with Workers, KV, R2, Pages, and DNS support. Zero dependencies, works with Node.js 18+.",
   "engines": {

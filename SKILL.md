@@ -1,14 +1,14 @@
 ---
 name: cloudflare-manager
-description: Comprehensive Cloudflare account management for deploying Workers, KV Storage, R2, Pages, DNS, and Routes. Use when deploying cloudflare services, managing worker containers, configuring KV/R2 storage, or setting up DNS/routing. Requires CLOUDFLARE_API_KEY in .env and Node.js 18+. Zero dependencies - no npm install needed!
-version: 2.2.0
+description: Comprehensive Cloudflare account management for deploying Workers, KV Storage, R2, Pages, DNS, Routes, Secrets, and Cron Triggers. Use when deploying cloudflare services, managing worker containers, configuring KV/R2 storage, setting up DNS/routing, managing secrets, or scheduling cron jobs. Requires CLOUDFLARE_API_KEY in .env and Node.js 18+. Zero dependencies - no npm install needed!
+version: 1.0.0
 ---
 
 # Cloudflare Manager
 
 > **Attribution**: This skill is based on and modified from [qdhenry/Claude-Command-Suite](https://github.com/qdhenry/Claude-Command-Suite/tree/main/.claude/skills/cloudflare-manager). Special thanks to the original author.
 
-Comprehensive Cloudflare service management skill that enables deployment and configuration of Workers, KV Storage, R2 buckets, Pages, DNS records, and routing. Automatically validates API credentials, extracts deployment URLs, and provides actionable error messages.
+Comprehensive Cloudflare service management skill that enables deployment and configuration of Workers, KV Storage, R2 buckets, Pages, DNS records, routing, secrets management, and cron triggers. Automatically validates API credentials, extracts deployment URLs, and provides actionable error messages.
 
 **Zero Dependencies** - This skill uses only Node.js built-in modules. No `npm install` required!
 
@@ -336,9 +336,67 @@ All scripts are located in `~/.claude/skills/cloudflare-manager/scripts/`:
 - **zones.js**: Manage zones, view settings, and purge cache
 - **d1-database.js**: Create, query, and manage D1 SQL databases
 - **logs.js**: View Workers and Pages logs (real-time and historical)
+- **secrets.js**: Manage Workers secrets (environment variables)
+- **cron.js**: Manage Cron Triggers (scheduled tasks)
 - **utils.js**: Shared utilities for API calls and error handling
 
-## New Features (v2.2.0)
+## Features
+
+### Workers Secrets Management
+
+Manage encrypted secrets for your Workers:
+
+```bash
+# List all secrets for a worker
+node scripts/secrets.js list my-worker
+
+# Create or update a secret
+node scripts/secrets.js put my-worker API_KEY sk-123456
+node scripts/secrets.js put my-worker DATABASE_URL "postgres://user:pass@host/db"
+
+# Delete a secret
+node scripts/secrets.js delete my-worker OLD_SECRET
+```
+
+**Notes**:
+- Secrets are encrypted and only accessible by the worker at runtime
+- Secret values are never exposed via the API
+- Setting a secret creates a new version of the worker
+
+### Cron Triggers (Scheduled Tasks)
+
+Schedule your Workers to run on a cron schedule:
+
+```bash
+# List current schedules
+node scripts/cron.js list my-worker
+
+# Set a single schedule (every 5 minutes)
+node scripts/cron.js update my-worker "*/5 * * * *"
+
+# Set multiple schedules (max 3)
+node scripts/cron.js update my-worker "0 * * * *" "0 0 * * *"
+
+# Run every weekday at 9 AM UTC
+node scripts/cron.js update my-worker "0 9 * * 1-5"
+
+# Remove all schedules
+node scripts/cron.js delete my-worker
+
+# Test locally (shows instructions)
+node scripts/cron.js test my-worker
+```
+
+**Common cron expressions**:
+- `* * * * *` - Every minute
+- `*/5 * * * *` - Every 5 minutes
+- `0 * * * *` - Every hour
+- `0 0 * * *` - Daily at midnight
+- `0 9 * * 1-5` - 9 AM on weekdays
+- `0 0 1 * *` - First of every month
+- `0 0 L * *` - Last day of every month
+
+## Additional Features
 
 ### Logs Viewing (Workers & Pages)
 
