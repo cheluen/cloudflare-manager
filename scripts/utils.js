@@ -385,11 +385,19 @@ export function validateBucketName(name) {
  * Parse command line arguments
  */
 export function parseArgs(argv) {
-  const command = argv[2];
+  let command = null;
+  let startIndex = 2;
+
+  // If argv[2] exists and is not a flag, treat it as command
+  if (argv[2] && !argv[2].startsWith('-')) {
+    command = argv[2];
+    startIndex = 3;
+  }
+
   const args = [];
   const flags = {};
 
-  for (let i = 3; i < argv.length; i++) {
+  for (let i = startIndex; i < argv.length; i++) {
     const arg = argv[i];
 
     if (arg.startsWith('--')) {
