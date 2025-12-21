@@ -43,6 +43,7 @@ Get your token from: https://dash.cloudflare.com/profile/api-tokens
 | Worker Routes | Zone > Workers Routes | Edit |
 | Zone settings | Zone > Zone Settings | Read |
 | Cache purge | Zone > Cache Purge | Purge |
+| **Workers logs (Telemetry)** | **Account > Analytics** | **Read** |
 
 **Quick Setup**: Use "Edit Cloudflare Workers" template, then add permissions as needed.
 
@@ -112,6 +113,7 @@ CLOUDFLARE_ACCOUNT_ID=your_account_id  # 可选，会自动检测
 | Worker 路由 | Zone > Workers Routes | Edit |
 | Zone 设置 | Zone > Zone Settings | Read |
 | 缓存清除 | Zone > Cache Purge | Purge |
+| **Workers 日志 (Telemetry)** | **Account > Analytics** | **Read** |
 
 **快速设置**：使用 "Edit Cloudflare Workers" 模板，然后按需添加权限。
 
